@@ -151,6 +151,9 @@ python3 -B iteration_1_residual/analysis/compare_results.py
 
 The comparison script reads existing checkpoints, evaluates them on the CPU and
 writes to `../ARTIFACTS/analysis/iteration_1_residual/`. It does not retrain models.
+It includes the completed paper-description CNN run alongside the original and
+residual models. See [the completed-run analysis](docs/results_2026-09-27.md) for
+the results and the unresolved metric differences with the publication.
 Full-resolution smoke runs are available with `--smoke-test --device cpu` on
 iterations 1 and 2, and write into their external `results/<iteration>/smoke/` trees.
 Use a separate `TFC_ARTIFACTS_DIR` to keep verification runs isolated.
