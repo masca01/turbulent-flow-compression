@@ -1,0 +1,34 @@
+# Python and editor caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.matplotlib
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
+
+# Data, trained models and generated artifacts belong outside this repository.
+DATA/
+data/
+ARTIFACTS/
+artifacts/
+results
+outputs/
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.hdf5
+*.mat
+*.npy
+*.npz
+*.log
+*.tmp
+
+# Local migration compatibility links and generated comparisons
+iteration_1_residual/analysis/comparison.json
+iteration_1_residual/analysis/comparison.png
+verification.json
+original_file_hashes.json
