@@ -115,8 +115,9 @@ through compatibility links. Its outputs now physically reside in
 
 ## Results, resume and evaluation
 
-All models retain the same seed-7 split: 4,500 training snapshots and 500 validation
-snapshots. Normalisation uses training snapshots only. Validation scores are
+By default, all models retain the same seed-7 split: 4,500 training snapshots and 500 validation
+snapshots. The residual script also accepts `--val-frac 0.02` for the separate
+4,900-training / 100-validation experiment. Normalisation uses training snapshots only. Validation scores are
 internal holdout scores, not the organisers' withheld test scores.
 
 Each experiment has its own output subtree and parameter-specific run folders:

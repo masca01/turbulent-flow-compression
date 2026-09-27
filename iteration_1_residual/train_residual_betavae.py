@@ -35,12 +35,14 @@ RESULTS    = str(EXPERIMENT_RESULTS)    # one sub-folder per run (run_dir), see 
 
 
 def _cli(argv):
-    global N_EPOCHS, LATENT_DIM, BETA, MAX_TRAIN, BATCH_SIZE, DEVICE, SMOKE_TEST, RESULTS
+    global N_EPOCHS, LATENT_DIM, BETA, MAX_TRAIN, BATCH_SIZE, DEVICE, SMOKE_TEST, RESULTS, VAL_FRAC
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--epochs", type=int, default=N_EPOCHS)
     p.add_argument("--latent", type=int, default=LATENT_DIM)
     p.add_argument("--beta", type=float, default=BETA)
     p.add_argument("--batch-size", type=int, default=BATCH_SIZE)
+    p.add_argument("--val-frac", type=float, default=VAL_FRAC,
+                   help="fraction held out for validation; 0.02 gives 4900 train / 100 validation")
     p.add_argument("--max-train", type=int)
     p.add_argument("--device", choices=("cpu", "mps"), default=str(DEVICE))
     p.add_argument("--resume", action="store_true")
@@ -52,12 +54,15 @@ def _cli(argv):
         p.error("epochs, latent and batch-size must be positive; beta must be finite and nonnegative")
     if args.max_train is not None and args.max_train < 1:
         p.error("max-train must be positive")
+    if not 0 < args.val_frac < 1:
+        p.error("val-frac must be strictly between 0 and 1")
     if args.resume and args.eval_only is not None:
         p.error("choose resume or eval-only")
     if args.device == "mps" and not torch.backends.mps.is_available():
         p.error("MPS is unavailable; use --device cpu")
     N_EPOCHS, LATENT_DIM, BETA = args.epochs, args.latent, args.beta
     BATCH_SIZE, MAX_TRAIN, DEVICE = args.batch_size, args.max_train, torch.device(args.device)
+    VAL_FRAC = args.val_frac
     SMOKE_TEST = args.smoke_test
     if SMOKE_TEST:
         N_EPOCHS, MAX_TRAIN, BATCH_SIZE = 2, 4, 2
@@ -281,6 +286,8 @@ def main():
     data = bl_data.BLPlanes()
     C, H, W = data.C, data.H, data.W
     tr_idx, val_idx = bl_data.split(data.N, VAL_FRAC, RNG_SEED)
+    if not len(tr_idx):
+        raise ValueError("Validation fraction leaves no training snapshots.")
     if MAX_TRAIN: tr_idx = tr_idx[:MAX_TRAIN]
     if SMOKE_TEST: val_idx = val_idx[:4]
     name = run_name()

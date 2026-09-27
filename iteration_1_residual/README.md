@@ -34,6 +34,23 @@ Change settings explicitly, for example:
 python3 -u train_residual_betavae.py --latent 30 --beta 0 --epochs 500
 ```
 
+For the 4,900-training / 100-validation experiment, from the repository root:
+
+```bash
+caffeinate -i python3 -u iteration_1_residual/train_residual_betavae.py --val-frac 0.02 --latent 30 --beta 0 --epochs 500 --device mps
+```
+
+This trains from scratch with the same architecture, seeds, batch size and learning
+rate. The 100 validation snapshots are a subset of the original 500-snapshot
+holdout; the other 400 join training. Normalisation is recomputed using the 4,900
+training snapshots only. Outputs go to the separate external folder
+`../../ARTIFACTS/results/iteration_1_residual/lat30_beta0_ep500_ntr4900/`.
+Repeat these flags with `--resume` to resume this run. In IDLE, set `VAL_FRAC = 0.02`
+in the CONFIG block before F5. The default remains the original 4,500/500 split.
+To isolate the data-size effect, compare both trained models on the same 100
+held-out snapshots; the previous 500-snapshot validation average is not directly
+equivalent.
+
 ## Architecture
 
 Each encoder stage contains the original 3x3 stride-2 convolution and ELU,
