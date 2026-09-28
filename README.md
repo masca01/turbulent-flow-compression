@@ -29,6 +29,11 @@ Challenge/
 │   │   ├── model.py
 │   │   ├── train_wide_deterministic.py
 │   │   └── test_model.py
+│   ├── iteration_4_stable_deterministic/
+│   │   ├── model.py
+│   │   ├── train_stable.py
+│   │   ├── stability.py
+│   │   └── test_stability.py
 │   ├── tests/
 │   └── requirements.txt
 ├── DATA/BL2/                             # HDF5 input data, outside Git
@@ -39,7 +44,8 @@ Challenge/
 │   │   ├── baseline/
 │   │   ├── iteration_1_residual/
 │   │   ├── iteration_2_paper_cnn/
-│   │   └── iteration_3_wide_deterministic/ # Created when launched
+│   │   ├── iteration_3_wide_deterministic/
+│   │   └── iteration_4_stable_deterministic/ # Created when launched
 │   ├── analysis/iteration_1_residual/
 │   ├── cache/
 │   └── migration/                        # Local migration records/source backup
@@ -92,6 +98,9 @@ python3 -u iteration_2_paper_cnn/train_paper_cnn.py
 
 # Wide deterministic residual AE: latent 32, 500 epochs, 4500 train / 500 validation
 python3 -u iteration_3_wide_deterministic/train_wide_deterministic.py
+
+# Stable wide AE: random initialisation, LayerNorm bottleneck, smaller LR and clipping
+python3 -u iteration_4_stable_deterministic/train_stable.py
 ```
 
 Choose one run at a time. On macOS, prefix a command with `caffeinate -i` to prevent
@@ -100,6 +109,10 @@ idle sleep. These commands start immediately; they do not queue automatically.
 [Iteration 3](iteration_3_wide_deterministic/README.md) doubles the residual
 network's channel widths and removes latent sampling. Its 50.18M-parameter model
 uses pure reconstruction MSE and preserves per-component validation history.
+After iteration 3 collapsed, [iteration 4](iteration_4_stable_deterministic/README.md)
+was added as a fresh experiment with fixed bottleneck LayerNorm, lower learning
+rate, gradient clipping and collapse checks. It starts from random weights and
+writes separate outputs; it does not recover or load iteration 3's checkpoint.
 
 CLI flags override the CONFIG block. For example, to run the paper CNN at the
 paper's nearby N=32 comparison point:
@@ -160,6 +173,8 @@ verified copy of the authors' implementation.
 python3 -B -m unittest discover -s tests -v
 python3 -B iteration_2_paper_cnn/test_model.py
 python3 -B iteration_3_wide_deterministic/test_model.py
+python3 -B iteration_4_stable_deterministic/test_model.py
+python3 -B iteration_4_stable_deterministic/test_stability.py
 python3 -B iteration_1_residual/analysis/compare_results.py
 ```
 
