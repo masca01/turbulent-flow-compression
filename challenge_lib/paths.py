@@ -28,7 +28,8 @@ CACHE_DIR = ARTIFACTS_DIR / "cache"
 
 
 def experiment_results(name):
-    if name not in ("baseline", "iteration_1_residual", "iteration_2_paper_cnn"):
+    if name not in ("baseline", "iteration_1_residual", "iteration_2_paper_cnn",
+                    "iteration_3_wide_deterministic"):
         raise ValueError(f"Unknown experiment: {name}")
     return RESULTS_DIR / name
 

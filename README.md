@@ -25,6 +25,10 @@ Challenge/
 │   │   ├── model.py
 │   │   ├── train_paper_cnn.py
 │   │   └── test_model.py
+│   ├── iteration_3_wide_deterministic/
+│   │   ├── model.py
+│   │   ├── train_wide_deterministic.py
+│   │   └── test_model.py
 │   ├── tests/
 │   └── requirements.txt
 ├── DATA/BL2/                             # HDF5 input data, outside Git
@@ -34,7 +38,8 @@ Challenge/
 │   ├── results/
 │   │   ├── baseline/
 │   │   ├── iteration_1_residual/
-│   │   └── iteration_2_paper_cnn/
+│   │   ├── iteration_2_paper_cnn/
+│   │   └── iteration_3_wide_deterministic/ # Created when launched
 │   ├── analysis/iteration_1_residual/
 │   ├── cache/
 │   └── migration/                        # Local migration records/source backup
@@ -84,10 +89,17 @@ python3 -u iteration_1_residual/train_residual_betavae.py
 
 # Paper-description CNN-AE: current user configuration is latent 30, 100 epochs
 python3 -u iteration_2_paper_cnn/train_paper_cnn.py
+
+# Wide deterministic residual AE: latent 32, 500 epochs, 4500 train / 500 validation
+python3 -u iteration_3_wide_deterministic/train_wide_deterministic.py
 ```
 
 Choose one run at a time. On macOS, prefix a command with `caffeinate -i` to prevent
 idle sleep. These commands start immediately; they do not queue automatically.
+
+[Iteration 3](iteration_3_wide_deterministic/README.md) doubles the residual
+network's channel widths and removes latent sampling. Its 50.18M-parameter model
+uses pure reconstruction MSE and preserves per-component validation history.
 
 CLI flags override the CONFIG block. For example, to run the paper CNN at the
 paper's nearby N=32 comparison point:
@@ -147,6 +159,7 @@ verified copy of the authors' implementation.
 ```bash
 python3 -B -m unittest discover -s tests -v
 python3 -B iteration_2_paper_cnn/test_model.py
+python3 -B iteration_3_wide_deterministic/test_model.py
 python3 -B iteration_1_residual/analysis/compare_results.py
 ```
 
@@ -155,6 +168,10 @@ writes to `../ARTIFACTS/analysis/iteration_1_residual/`. It does not retrain mod
 It includes the completed paper-description CNN run alongside the original and
 residual models. See [the completed-run analysis](docs/results_2026-09-27.md) for
 the results and the unresolved metric differences with the publication.
+The [500-epoch comparison](docs/results_2026-09-28.md) covers the newer latent-32
+CNN and the 4,900-training-snapshot residual run, including evaluation on the same
+100 held-out snapshots. Reproduce that CPU-only analysis with
+`python3 -B iteration_1_residual/analysis/compare_500_epoch_runs.py`.
 Full-resolution smoke runs are available with `--smoke-test --device cpu` on
 iterations 1 and 2, and write into their external `results/<iteration>/smoke/` trees.
 Use a separate `TFC_ARTIFACTS_DIR` to keep verification runs isolated.

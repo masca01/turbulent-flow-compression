@@ -22,7 +22,7 @@ class LayoutTests(unittest.TestCase):
             source = '''import json, runpy
 from pathlib import Path
 root = Path(ROOT_VALUE)
-scripts = ["train_betavae_bl.py", "iteration_1_residual/train_residual_betavae.py", "iteration_2_paper_cnn/train_paper_cnn.py"]
+scripts = ["train_betavae_bl.py", "iteration_1_residual/train_residual_betavae.py", "iteration_2_paper_cnn/train_paper_cnn.py", "iteration_3_wide_deterministic/train_wide_deterministic.py"]
 reports = []
 for script in scripts:
     ns = runpy.run_path(str(root / script), run_name="import_check")
@@ -33,7 +33,8 @@ print(json.dumps(reports))
                                     env=env, capture_output=True, text=True, check=True)
             reports = json.loads(result.stdout)
             self.assertEqual([r["model"] for r in reports], [
-                "challenge_lib.baseline_model", "iteration_1_residual.model", "iteration_2_paper_cnn.model"])
+                "challenge_lib.baseline_model", "iteration_1_residual.model", "iteration_2_paper_cnn.model",
+                "iteration_3_wide_deterministic.model"])
             for report in reports:
                 self.assertTrue(Path(report["results"]).is_relative_to((Path(temp) / "outputs").resolve()))
                 self.assertEqual(Path(report["data"]), (Path(temp) / "no-data/BL2/Challenge1.1_train.h5").resolve())
