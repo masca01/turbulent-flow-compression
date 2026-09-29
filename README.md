@@ -34,6 +34,10 @@ Challenge/
 │   │   ├── train_stable.py
 │   │   ├── stability.py
 │   │   └── test_stability.py
+│   ├── iteration_5_higher_lr/
+│   │   ├── train_higher_lr.py
+│   │   ├── queue_after_iteration4.py
+│   │   └── test_experiment.py
 │   ├── tests/
 │   └── requirements.txt
 ├── DATA/BL2/                             # HDF5 input data, outside Git
@@ -45,7 +49,8 @@ Challenge/
 │   │   ├── iteration_1_residual/
 │   │   ├── iteration_2_paper_cnn/
 │   │   ├── iteration_3_wide_deterministic/
-│   │   └── iteration_4_stable_deterministic/ # Created when launched
+│   │   ├── iteration_4_stable_deterministic/
+│   │   └── iteration_5_higher_lr/          # Created when launched
 │   ├── analysis/iteration_1_residual/
 │   ├── cache/
 │   └── migration/                        # Local migration records/source backup
@@ -114,6 +119,10 @@ was added as a fresh experiment with fixed bottleneck LayerNorm, lower learning
 rate, gradient clipping and collapse checks. It starts from random weights and
 writes separate outputs; it does not recover or load iteration 3's checkpoint.
 
+[Iteration 5](iteration_5_higher_lr/README.md) tests the same model with a tenfold
+higher cosine learning-rate schedule. Its manual queue launcher waits for the
+current iteration-4 process to finish successfully before starting the new run.
+
 CLI flags override the CONFIG block. For example, to run the paper CNN at the
 paper's nearby N=32 comparison point:
 
@@ -175,6 +184,7 @@ python3 -B iteration_2_paper_cnn/test_model.py
 python3 -B iteration_3_wide_deterministic/test_model.py
 python3 -B iteration_4_stable_deterministic/test_model.py
 python3 -B iteration_4_stable_deterministic/test_stability.py
+python3 -B iteration_5_higher_lr/test_experiment.py
 python3 -B iteration_1_residual/analysis/compare_results.py
 ```
 
