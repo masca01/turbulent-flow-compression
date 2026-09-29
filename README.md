@@ -38,6 +38,9 @@ Challenge/
 │   │   ├── train_higher_lr.py
 │   │   ├── queue_after_iteration4.py
 │   │   └── test_experiment.py
+│   ├── iteration_6_higher_lr_floor/
+│   │   ├── train_higher_lr_floor.py
+│   │   └── test_experiment.py
 │   ├── tests/
 │   └── requirements.txt
 ├── DATA/BL2/                             # HDF5 input data, outside Git
@@ -50,7 +53,8 @@ Challenge/
 │   │   ├── iteration_2_paper_cnn/
 │   │   ├── iteration_3_wide_deterministic/
 │   │   ├── iteration_4_stable_deterministic/
-│   │   └── iteration_5_higher_lr/          # Created when launched
+│   │   ├── iteration_5_higher_lr/
+│   │   └── iteration_6_higher_lr_floor/    # Created when launched
 │   ├── analysis/iteration_1_residual/
 │   ├── cache/
 │   └── migration/                        # Local migration records/source backup
@@ -106,6 +110,9 @@ python3 -u iteration_3_wide_deterministic/train_wide_deterministic.py
 
 # Stable wide AE: random initialisation, LayerNorm bottleneck, smaller LR and clipping
 python3 -u iteration_4_stable_deterministic/train_stable.py
+
+# Higher late-training LR: same stable model, cosine 3e-4 to 1e-4, from scratch
+python3 -u iteration_6_higher_lr_floor/train_higher_lr_floor.py
 ```
 
 Choose one run at a time. On macOS, prefix a command with `caffeinate -i` to prevent
@@ -122,6 +129,11 @@ writes separate outputs; it does not recover or load iteration 3's checkpoint.
 [Iteration 5](iteration_5_higher_lr/README.md) tests the same model with a tenfold
 higher cosine learning-rate schedule. Its manual queue launcher waits for the
 current iteration-4 process to finish successfully before starting the new run.
+
+[Iteration 6](iteration_6_higher_lr_floor/README.md) keeps iteration 5's initial
+learning rate at 3e-4 and raises the cosine minimum from 3e-5 to 1e-4. It tests
+a larger late-training step with the same architecture, seeds and safeguards,
+starting from random weights in a separate output directory. Launch it manually.
 
 CLI flags override the CONFIG block. For example, to run the paper CNN at the
 paper's nearby N=32 comparison point:
@@ -185,6 +197,7 @@ python3 -B iteration_3_wide_deterministic/test_model.py
 python3 -B iteration_4_stable_deterministic/test_model.py
 python3 -B iteration_4_stable_deterministic/test_stability.py
 python3 -B iteration_5_higher_lr/test_experiment.py
+python3 -B iteration_6_higher_lr_floor/test_experiment.py
 python3 -B iteration_1_residual/analysis/compare_results.py
 ```
 
