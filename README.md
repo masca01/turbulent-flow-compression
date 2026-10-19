@@ -41,6 +41,10 @@ Challenge/
 │   ├── iteration_6_higher_lr_floor/
 │   │   ├── train_higher_lr_floor.py
 │   │   └── test_experiment.py
+│   ├── iteration_7_paper_frontend/
+│   │   ├── model.py
+│   │   ├── train_paper_frontend.py
+│   │   └── test_experiment.py
 │   ├── tests/
 │   └── requirements.txt
 ├── DATA/BL2/                             # HDF5 input data, outside Git
@@ -54,7 +58,8 @@ Challenge/
 │   │   ├── iteration_3_wide_deterministic/
 │   │   ├── iteration_4_stable_deterministic/
 │   │   ├── iteration_5_higher_lr/
-│   │   └── iteration_6_higher_lr_floor/    # Created when launched
+│   │   ├── iteration_6_higher_lr_floor/
+│   │   └── iteration_7_paper_frontend/     # Created when launched
 │   ├── analysis/iteration_1_residual/
 │   ├── cache/
 │   └── migration/                        # Local migration records/source backup
@@ -113,6 +118,9 @@ python3 -u iteration_4_stable_deterministic/train_stable.py
 
 # Higher late-training LR: same stable model, cosine 3e-4 to 1e-4, from scratch
 python3 -u iteration_6_higher_lr_floor/train_higher_lr_floor.py
+
+# Paper-inspired Conv/ReLU/MaxPool front end; same iteration-6 training settings
+python3 -u iteration_7_paper_frontend/train_paper_frontend.py
 ```
 
 Choose one run at a time. On macOS, prefix a command with `caffeinate -i` to prevent
@@ -134,6 +142,12 @@ current iteration-4 process to finish successfully before starting the new run.
 learning rate at 3e-4 and raises the cosine minimum from 3e-5 to 1e-4. It tests
 a larger late-training step with the same architecture, seeds and safeguards,
 starting from random weights in a separate output directory. Launch it manually.
+
+[Iteration 7](iteration_7_paper_frontend/README.md) replaces the first two stride-2
+encoder convolutions with stride-1 Conv/ReLU/MaxPool blocks, retaining residual
+refinement, the stable bottleneck and decoder. It keeps iteration 6's training
+settings and 50,180,403 parameters, with a distinct checkpoint architecture and
+external output folder. It starts from scratch and must be launched manually.
 
 CLI flags override the CONFIG block. For example, to run the paper CNN at the
 paper's nearby N=32 comparison point:
@@ -198,6 +212,7 @@ python3 -B iteration_4_stable_deterministic/test_model.py
 python3 -B iteration_4_stable_deterministic/test_stability.py
 python3 -B iteration_5_higher_lr/test_experiment.py
 python3 -B iteration_6_higher_lr_floor/test_experiment.py
+python3 -B iteration_7_paper_frontend/test_experiment.py
 python3 -B iteration_1_residual/analysis/compare_results.py
 ```
 

@@ -22,7 +22,7 @@ class LayoutTests(unittest.TestCase):
             source = '''import json, runpy
 from pathlib import Path
 root = Path(ROOT_VALUE)
-scripts = ["train_betavae_bl.py", "iteration_1_residual/train_residual_betavae.py", "iteration_2_paper_cnn/train_paper_cnn.py", "iteration_3_wide_deterministic/train_wide_deterministic.py", "iteration_4_stable_deterministic/train_stable.py", "iteration_5_higher_lr/train_higher_lr.py", "iteration_6_higher_lr_floor/train_higher_lr_floor.py"]
+scripts = ["train_betavae_bl.py", "iteration_1_residual/train_residual_betavae.py", "iteration_2_paper_cnn/train_paper_cnn.py", "iteration_3_wide_deterministic/train_wide_deterministic.py", "iteration_4_stable_deterministic/train_stable.py", "iteration_5_higher_lr/train_higher_lr.py", "iteration_6_higher_lr_floor/train_higher_lr_floor.py", "iteration_7_paper_frontend/train_paper_frontend.py"]
 reports = []
 for script in scripts:
     ns = runpy.run_path(str(root / script), run_name="import_check")
@@ -36,7 +36,8 @@ print(json.dumps(reports))
                 "challenge_lib.baseline_model", "iteration_1_residual.model", "iteration_2_paper_cnn.model",
                 "iteration_3_wide_deterministic.model", "iteration_4_stable_deterministic.model",
                 "iteration_4_stable_deterministic.model",
-                "iteration_4_stable_deterministic.model"])
+                "iteration_4_stable_deterministic.model",
+                "iteration_7_paper_frontend.model"])
             for report in reports:
                 self.assertTrue(Path(report["results"]).is_relative_to((Path(temp) / "outputs").resolve()))
                 self.assertEqual(Path(report["data"]), (Path(temp) / "no-data/BL2/Challenge1.1_train.h5").resolve())
